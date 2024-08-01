@@ -31,7 +31,6 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<void> _fetchUserProfile() async {
     // Simula la obtención de datos de usuario desde una base de datos
-    await Future.delayed(const Duration(seconds: 1));
     // Ejemplo de cómo obtener datos de SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getBool('isLoggedIn') != null) {

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hi/UserProfile.dart';
 import 'package:hi/assets/style/AppColors.dart';
 import 'package:hi/body.dart';
@@ -283,6 +284,11 @@ class _MyhomepageState extends State<Myhomepage> {
             const Color.fromARGB(115, 0, 0, 0), // Color del fondo negro
         pageBuilder: (BuildContext context, Animation<double> animation,
             Animation<double> secondaryAnimation) {
+          var buttonStyle = ButtonStyle(
+            backgroundColor:
+                WidgetStateProperty.all<Color>(AppColors.secondaryColor),
+          );
+          const submitStyles = TextStyle(color: AppColors.primaryColor);
           return Stack(
             children: [
               GestureDetector(
@@ -308,20 +314,20 @@ class _MyhomepageState extends State<Myhomepage> {
                     child: Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: AppColors.backgroundColor,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Text(
-                            'Este es un diálogo emergente',
+                            'Crea un Blurry',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontFamily: 'nuevo',
                               fontWeight: FontWeight.w600,
                               fontSize: 20,
-                              color: Colors.black,
+                              color: AppColors.onlyColor,
                               decoration: TextDecoration.none,
                             ),
                           ),
@@ -330,8 +336,55 @@ class _MyhomepageState extends State<Myhomepage> {
                             key: formKey,
                             child: TextFormField(
                               controller: textController,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 labelText: 'Ingrese algo',
+                                labelStyle: const TextStyle(
+                                  color: AppColors.primaryColor,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      12.0), // Radio de esquina para el borde
+                                  borderSide: const BorderSide(
+                                    color: Color.fromARGB(
+                                        255, 242, 149, 10), // Color del borde
+                                    width: 2.0, // Grosor del borde
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: const BorderSide(
+                                    color: AppColors
+                                        .primaryColor, // Color del borde cuando el campo está enfocado
+                                    width: 2.0,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: const BorderSide(
+                                    color: AppColors
+                                        .primaryColor, // Color del borde cuando el campo está habilitado
+                                    width: 2.0,
+                                  ),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: const BorderSide(
+                                    color: AppColors
+                                        .onlyColor, // Color del borde cuando hay un error
+                                    width: 2.0,
+                                  ),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: const BorderSide(
+                                    color: AppColors
+                                        .onlyColor, // Color del borde cuando hay un error y el campo está enfocado
+                                    width: 2.0,
+                                  ),
+                                ),
+                                errorStyle: const TextStyle(
+                                  color: AppColors.onlyColor,
+                                ),
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -341,19 +394,38 @@ class _MyhomepageState extends State<Myhomepage> {
                               },
                             ),
                           ),
-                          ElevatedButton(
-                            onPressed: () {
-                              if (formKey.currentState?.validate() ?? false) {
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            child: const Text('Enviar'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('Cancelar'),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              ElevatedButton(
+                                style: buttonStyle,
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text(
+                                  'Cancelar',
+                                  style: submitStyles,
+                                ),
+                              ),
+                              const Spacer(), // Añade un espacio flexible entre los botones
+                              ElevatedButton(
+                                style: buttonStyle,
+                                onPressed: () {
+                                  if (formKey.currentState?.validate() ??
+                                      false) {
+                                    if (kDebugMode) {
+                                      print(
+                                          'el textController: ${textController.text}');
+                                    }
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                                child: const Text(
+                                  'Enviar',
+                                  style: submitStyles,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
