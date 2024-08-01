@@ -400,6 +400,7 @@ class _MyhomepageState extends State<Myhomepage> {
                               ElevatedButton(
                                 style: buttonStyle,
                                 onPressed: () {
+                                  textController.clear();
                                   Navigator.of(context).pop();
                                 },
                                 child: const Text(
@@ -417,6 +418,27 @@ class _MyhomepageState extends State<Myhomepage> {
                                       print(
                                           'el textController: ${textController.text}');
                                     }
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        backgroundColor:
+                                            AppColors.backgroundColor,
+                                        content: Column(
+                                          children: [
+                                            Text(
+                                              '¡¡BLURRY!!',
+                                              style: TextStyle(
+                                                  fontFamily: 'nuevo',
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                            Icon(
+                                              Icons.bolt,
+                                              color: AppColors.onlyColor,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                    textController.clear();
                                     Navigator.of(context).pop();
                                   }
                                 },
