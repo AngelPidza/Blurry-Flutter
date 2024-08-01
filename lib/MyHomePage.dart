@@ -309,21 +309,21 @@ class _MyhomepageState extends State<Myhomepage> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      // Form(
-                      //   key: _formKey,
-                      //   child: TextFormField(
-                      //     controller: _textController,
-                      //     decoration: const InputDecoration(
-                      //       labelText: 'Ingrese algo',
-                      //     ),
-                      //     validator: (value) {
-                      //       if (value == null || value.isEmpty) {
-                      //         return 'Por favor ingrese algún texto';
-                      //       }
-                      //       return null;
-                      //     },
-                      //   ),
-                      // ),
+                      Form(
+                        key: _formKey,
+                        child: TextFormField(
+                          controller: _textController,
+                          decoration: const InputDecoration(
+                            labelText: 'Ingrese algo',
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor ingrese algún texto';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
                       ElevatedButton(
                         onPressed: () => Navigator.of(context).pop(),
                         style: ElevatedButton.styleFrom(
