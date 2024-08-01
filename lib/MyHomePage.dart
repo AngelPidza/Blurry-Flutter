@@ -19,8 +19,8 @@ class Myhomepage extends StatefulWidget {
 }
 
 class _MyhomepageState extends State<Myhomepage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _textController = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController textController = TextEditingController();
 //VARIABLES------------------
   double _opacity = 1.0;
   Timer? _timer;
@@ -276,90 +276,107 @@ class _MyhomepageState extends State<Myhomepage> {
 
   //FUNCION PARA AÑADIR UN 'BLURRY'
   void showAnimatedDialogAdd(BuildContext context) {
-    showGeneralDialog(
-      context: context,
-      pageBuilder: (BuildContext buildContext, Animation<double> animation,
-          Animation<double> secondaryAnimation) {
-        return SafeArea(
-          child: Builder(
-            builder: (BuildContext context) {
-              return Center(
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        opaque: false, // Hace que el fondo sea transparente
+        barrierColor:
+            const Color.fromARGB(115, 0, 0, 0), // Color del fondo negro
+        pageBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation) {
+          return Stack(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context)
+                      .pop(); // Cierra el diálogo al tocar fuera
+                },
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  height: MediaQuery.of(context).size.width * 0.6,
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Center(
-                        child: Text(
-                          'Este es un diálogo emergente',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'nuevo',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20,
-                            color: Colors.black,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      // Form(
-                      //   key: _formKey,
-                      //   child: TextFormField(
-                      //     controller: _textController,
-                      //     decoration: const InputDecoration(
-                      //       labelText: 'Ingrese algo',
-                      //     ),
-                      //     validator: (value) {
-                      //       if (value == null || value.isEmpty) {
-                      //         return 'Por favor ingrese algún texto';
-                      //       }
-                      //       return null;
-                      //     },
-                      //   ),
-                      // ),
-                      ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                        ),
-                        child: const Text(
-                          'Atras',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
+                  color: Colors
+                      .transparent, // Fondo extra para detectar si se pickea fuera y salir del modal
+                ),
+              ),
+              ScaleTransition(
+                scale: Tween<double>(begin: 0.0, end: 1.0).animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeInOutBack,
                   ),
                 ),
-              );
-            },
-          ),
-        );
-      },
-      barrierDismissible: true,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: const Color.fromARGB(115, 0, 0, 0),
-      transitionDuration: const Duration(milliseconds: 600),
-      transitionBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation, Widget child) {
-        return ScaleTransition(
-          scale: Tween<double>(begin: 0.0, end: 1.0).animate(
-            CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeInOutBack,
+                child: Center(
+                  child: Dialog(
+                    insetPadding: EdgeInsets.symmetric(horizontal: 40),
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'Este es un diálogo emergente',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'nuevo',
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                              color: Colors.black,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Form(
+                            key: formKey,
+                            child: TextFormField(
+                              controller: textController,
+                              decoration: const InputDecoration(
+                                labelText: 'Ingrese algo',
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Por favor ingrese algún texto';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (formKey.currentState?.validate() ?? false) {
+                                Navigator.of(context).pop();
+                              }
+                            },
+                            child: const Text('Enviar'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Cancelar'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+        transitionsBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation, Widget child) {
+          return FadeTransition(
+            opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeInOutBack,
+              ),
             ),
-          ),
-          child: child,
-        );
-      },
+            child: child,
+          );
+        },
+      ),
     );
   }
 
