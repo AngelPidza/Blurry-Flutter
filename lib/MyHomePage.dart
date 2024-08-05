@@ -476,11 +476,18 @@ class _MyhomepageState extends State<Myhomepage> {
 
   @override
   Widget build(BuildContext context) {
+    //Calculos para la animacion de ocultar el AppBar al scrollear
     double opacityButton = 1.0 - (_scrollOffset / 100);
     double appBarHeight = 200.0 - _scrollOffset;
     double titleFontSize = 30 + (_scrollOffset / 14);
     double titlePositionRight = 160 - (_scrollOffset * 1.4);
     double titlePositionTop = 100 - (_scrollOffset / 1.6);
+    //Variables
+    const labelStyleFloatingActionButton = TextStyle(
+      fontFamily: 'nuevo',
+      fontWeight: FontWeight.w700,
+    );
+    //Return...
     return Scaffold(
       extendBodyBehindAppBar: false,
       appBar: PreferredSize(
@@ -736,6 +743,8 @@ class _MyhomepageState extends State<Myhomepage> {
                   Icons.login,
                   color: Color.fromARGB(255, 0, 0, 0),
                 ),
+                label: 'Salir de la sesion',
+                labelStyle: labelStyleFloatingActionButton,
                 shape: const CircleBorder(),
               ),
               //Boton de cambiar usuario
@@ -748,6 +757,8 @@ class _MyhomepageState extends State<Myhomepage> {
                   color: Color.fromARGB(255, 0, 0, 0),
                   size: 30.0,
                 ),
+                label: 'Agregar Usuario',
+                labelStyle: labelStyleFloatingActionButton,
                 shape: const CircleBorder(),
               ),
               //Boton de añadir publicacion
@@ -785,6 +796,8 @@ class _MyhomepageState extends State<Myhomepage> {
                   Icons.add_card,
                   color: Color.fromARGB(255, 0, 0, 0),
                 ),
+                label: 'Agregar BlurryPost',
+                labelStyle: labelStyleFloatingActionButton,
                 shape: const CircleBorder(),
               ),
               //USER PROFILE BUTTON
@@ -814,15 +827,20 @@ class _MyhomepageState extends State<Myhomepage> {
                   color: Color.fromARGB(255, 0, 0, 0),
                   size: 31.0,
                 ),
+                label: 'Cuenta',
+                labelStyle: labelStyleFloatingActionButton,
                 shape: const CircleBorder(),
               ),
+              //Boton para agregar un BLURRY
               SpeedDialChild(
                 onTap: () => showAnimatedDialogAdd(context),
                 child: const Icon(
                   Icons.add,
-                  color: Color.fromARGB(255, 0, 0, 0),
+                  color: Color.fromARGB(255, 213, 161, 4),
                   size: 31.0,
                 ),
+                label: 'BLURRY',
+                labelStyle: labelStyleFloatingActionButton,
                 shape: const CircleBorder(),
               ),
             ],
