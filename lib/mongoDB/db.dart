@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:hi/mongoDB/constans_Compass.dart';
 
 //Esta clase es la que hace todo el trabajo con la base de datos. El unico detalle son las variables
 //que guarda y no estoy seguro si esta bien con respecto a la Seguridadd.
@@ -47,14 +47,15 @@ class MongoDataBase {
     _connectionCompleter = Completer<void>();
 
     try {
-      db ??= await Db.create(MONGO_CONN_URL);
+      await dotenv.load();
+      db ??= await Db.create(dotenv.env['MONGO_CONN_URL']!);
       if (!db!.isConnected) {
         await db!.open();
         print("Base de datos abierta y conectada");
       }
 
-      userCollection = db!.collection(USER_COLLECTION);
-      blurryCollection = db!.collection(BLURRY_COLLECTION);
+      userCollection = db!.collection(dotenv.env['USER_COLLECTION']!);
+      blurryCollection = db!.collection(dotenv.env['BLURRY_COLLECTION']!);
 
       if (userCollection != null) {
         print('Collection initialized successfully.');
@@ -63,8 +64,9 @@ class MongoDataBase {
       }
 
       _connectionCompleter!.complete();
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('Error al conectar la base de datos: $e');
+      print('Stack trace: $stackTrace');
       _connectionCompleter!.completeError(e);
       rethrow;
     } finally {
@@ -115,7 +117,7 @@ class MongoDataBase {
       if (db.isConnected) {
         print("base de datos abierta {getData}");
       }
-      userCollection = db.collection(USER_COLLECTION);
+      userCollection = db.collection(dotenv.env['USER_COLLECTION']!);
 
       if (userCollection != null) {
         print('Coleccion obtenida e iniciada.');

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hi/assets/style/AppColors.dart';
 import 'package:hi/mongoDB/db.dart';
 import 'MyHomePage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(); // Cargar el archivo .env
+
   await MongoDataBase.connect();
   //Esto solamente hace que la aplicacion sea inmersiva, enfocada en solamente la misma
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
