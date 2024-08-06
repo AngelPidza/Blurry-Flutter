@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hi/UserProfile.dart';
 import 'package:hi/assets/style/AppColors.dart';
 import 'package:hi/body.dart';
@@ -20,9 +19,10 @@ class Myhomepage extends StatefulWidget {
 }
 
 class _MyhomepageState extends State<Myhomepage> {
+//VARIABLES------------------
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController textController = TextEditingController();
-//VARIABLES------------------
+
   double _opacity = 1.0;
   Timer? _timer;
   List<String> emailList = [];
@@ -56,7 +56,7 @@ class _MyhomepageState extends State<Myhomepage> {
   }
 //-----------------------------------------------------------
 
-//Checkea el estado y devuelve valores si no es nulo---------
+//Checkea el estado y devuelve valores si no es nulo
   Future<void> _checkLoginStatus() async {
     _getEmailsFromSharedPreferences();
     if (kDebugMode) {
@@ -127,6 +127,7 @@ class _MyhomepageState extends State<Myhomepage> {
   }
 //-----------------------------------------------------------
 
+//Funcion para traer un Blurry aleatorio
   Future<String>? textBlurry() async {
     String? data = await MongoDataBase.blurry();
     if (kDebugMode) {
@@ -134,26 +135,26 @@ class _MyhomepageState extends State<Myhomepage> {
     }
     return data!;
   }
+//-----------------------------------------------------
 
 //TIEMPO DE OPACIDAD DEL BOTON DERECHO INFERIOR
   void _startTimer() {
     _timer?.cancel();
+    setState(() {
+      _opacity = 1.0;
+    });
+  }
+
+  void _resetOpacity() {
     _timer = Timer(const Duration(seconds: 1), () {
       setState(() {
         _opacity = 0.5;
       });
     });
   }
-
-  void _resetOpacity() {
-    setState(() {
-      _opacity = 1.0;
-    });
-    _startTimer();
-  }
 //------------------------------------------------
 
-  //REMUEVE EMAILS DE LA LISTA
+//REMUEVE EMAILS DE LA LISTA
   Future<void> _removeEmail(String email) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (email == prefs.getString('email')) {
@@ -165,8 +166,9 @@ class _MyhomepageState extends State<Myhomepage> {
     });
     await prefs.setStringList('EmailList', emailList);
   }
+//-------------------------------------------------
 
-  //RECIBIR LOS EMAILS GUARDADOS
+//RECIBIR LOS EMAILS GUARDADOS
   Future<void> _getEmailsFromSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -176,16 +178,18 @@ class _MyhomepageState extends State<Myhomepage> {
       emailList = prefs.getStringList('EmailList') ?? [];
     });
   }
+//---------------------------------------------------
 
-  //CAMBIO DE USUARIO DESDE DE LA LISTA DE EMAILS GUARDADOS
+//CAMBIO DE USUARIO DESDE DE LA LISTA DE EMAILS GUARDADOS
   Future<void> userChanged(String email) async {
     print("Entrando a userChanged()");
     final cambio = await SharedPreferences.getInstance();
     _checkLoginStatus();
     cambio.setString('email', email);
   }
+//----------------------------------------------------
 
-  //FUNCION PARA MOSTRAR UN 'BLURRY'
+//FUNCION PARA MOSTRAR UN 'BLURRY' (parte derecha superior de la pantalla)
   void showAnimatedDialog(BuildContext context) {
     showGeneralDialog(
       context: context,
@@ -198,7 +202,7 @@ class _MyhomepageState extends State<Myhomepage> {
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.8,
                   height: MediaQuery.of(context).size.width * 0.6,
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: AppColors.backgroundColor,
                     borderRadius: BorderRadius.circular(12),
@@ -274,8 +278,9 @@ class _MyhomepageState extends State<Myhomepage> {
       },
     );
   }
+//-----------------------------------------------------
 
-  //FUNCION PARA AÑADIR UN 'BLURRY'
+//FUNCION PARA AÑADIR UN 'BLURRY'
   void showAnimatedDialogAdd(BuildContext context) {
     Navigator.of(context).push(
       PageRouteBuilder(
@@ -310,7 +315,7 @@ class _MyhomepageState extends State<Myhomepage> {
                 ),
                 child: Center(
                   child: Dialog(
-                    insetPadding: EdgeInsets.symmetric(horizontal: 40),
+                    insetPadding: const EdgeInsets.symmetric(horizontal: 40),
                     child: Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -473,7 +478,142 @@ class _MyhomepageState extends State<Myhomepage> {
       ),
     );
   }
+//-----------------------------------------------------
 
+//Modal de los Emails para poder cambiar segun guardado en el SharePreferences
+  void emailsModal(BuildContext context) {
+    if (emailList.isEmpty) {
+      if (kDebugMode) print("la lista está vacía");
+    } else {
+      for (var data in emailList) {
+        int count = 1;
+        if (kDebugMode) print("$count.- $data");
+        count++;
+      }
+    }
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withOpacity(0.3),
+      transitionAnimationController: AnimationController(
+        duration: const Duration(milliseconds: 600),
+        vsync: Navigator.of(context),
+      ),
+      builder: (BuildContext context) {
+        return AnimatedBuilder(
+          animation: CurvedAnimation(
+            parent: ModalRoute.of(context)!.animation!,
+            curve: Curves.easeInOutBack,
+          ),
+          builder: (context, child) {
+            return Transform.scale(
+              scale: CurvedAnimation(
+                parent: ModalRoute.of(context)!.animation!,
+                curve: Curves.easeInOutBack,
+              ).value,
+              child: child,
+            );
+          },
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.35,
+            decoration: const BoxDecoration(
+              color: AppColors.backgroundColor,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+            child: emailList.isEmpty
+                ? const Center(
+                    child: Text('No hay cuentas guardadas'),
+                  )
+                : ListView.builder(
+                    itemCount: emailList.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: const Icon(
+                          Icons.email,
+                          color: AppColors.primaryColor,
+                        ),
+                        title: Text(
+                          emailList[index],
+                          style: const TextStyle(
+                            color: AppColors.textSecondary,
+                            fontFamily: 'nuevo',
+                          ),
+                        ),
+                        trailing: IconButton(
+                          color: AppColors.primaryColor,
+                          icon: const Icon(Icons.close),
+                          onPressed: () async {
+                            bool confirmar = await showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  backgroundColor: AppColors.primaryColor,
+                                  title: const Text(
+                                    'Advertencia',
+                                    style: TextStyle(),
+                                  ),
+                                  content: const Text(
+                                      '¿Estás seguro de que quieres eliminar este correo electrónico?'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: const Text(
+                                        'Cancelar',
+                                        style: TextStyle(
+                                            color: AppColors.secondaryColor),
+                                      ),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                    ),
+                                    TextButton(
+                                      child: const Text(
+                                        'Eliminar',
+                                        style: TextStyle(
+                                            color: AppColors.backgroundColor),
+                                      ),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(true),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
+                            if (confirmar == true) {
+                              await _removeEmail(emailList[index]);
+                            }
+                          },
+                        ),
+                        onTap: () {
+                          userChanged(emailList[index]);
+                          if (kDebugMode) {
+                            print('Cuenta seleccionada: ${emailList[index]}');
+                          }
+                          print("Regrese del show en onTops");
+                          _checkLoginStatus();
+                          Navigator.pop(context);
+                        },
+                      );
+                    },
+                  ),
+          ),
+        );
+      },
+    );
+  }
+//-----------------------------------------------------
+
+  Future<void> open() async {
+    MongoDataBase.db!.isConnected
+        ? print('${MongoDataBase.db} \n db open')
+        : print('${MongoDataBase.db} \n db closed');
+  }
+
+//WIDGET PADRE------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     //Calculos para la animacion de ocultar el AppBar al scrollear
@@ -843,137 +983,29 @@ class _MyhomepageState extends State<Myhomepage> {
                 labelStyle: labelStyleFloatingActionButton,
                 shape: const CircleBorder(),
               ),
+//BOTON DE CONTROL DE RIESGOS:
+              SpeedDialChild(
+                onTap: () => open(),
+                child: const CircleAvatar(
+                  backgroundColor: AppColors.secondaryColor,
+                  child: Text(
+                    'B',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                label: 'BASE DE DATOS',
+                labelStyle: labelStyleFloatingActionButton,
+                shape: const CircleBorder(),
+              ),
             ],
-            onOpen: () => _resetOpacity(),
+            onOpen: () => _startTimer(),
             onClose: () => _resetOpacity(),
           ),
         ),
       ),
-    );
-  }
-
-  void emailsModal(BuildContext context) {
-    if (emailList.isEmpty) {
-      if (kDebugMode) print("la lista está vacía");
-    } else {
-      for (var data in emailList) {
-        int count = 1;
-        if (kDebugMode) print("$count.- $data");
-        count++;
-      }
-    }
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withOpacity(0.3),
-      transitionAnimationController: AnimationController(
-        duration: const Duration(milliseconds: 600),
-        vsync: Navigator.of(context),
-      ),
-      builder: (BuildContext context) {
-        return AnimatedBuilder(
-          animation: CurvedAnimation(
-            parent: ModalRoute.of(context)!.animation!,
-            curve: Curves.easeInOutBack,
-          ),
-          builder: (context, child) {
-            return Transform.scale(
-              scale: CurvedAnimation(
-                parent: ModalRoute.of(context)!.animation!,
-                curve: Curves.easeInOutBack,
-              ).value,
-              child: child,
-            );
-          },
-          child: Container(
-            height: MediaQuery.of(context).size.height * 0.35,
-            decoration: const BoxDecoration(
-              color: AppColors.backgroundColor,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-            ),
-            child: emailList.isEmpty
-                ? const Center(
-                    child: Text('No hay cuentas guardadas'),
-                  )
-                : ListView.builder(
-                    itemCount: emailList.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: const Icon(
-                          Icons.email,
-                          color: AppColors.primaryColor,
-                        ),
-                        title: Text(
-                          emailList[index],
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
-                            fontFamily: 'nuevo',
-                          ),
-                        ),
-                        trailing: IconButton(
-                          color: AppColors.primaryColor,
-                          icon: const Icon(Icons.close),
-                          onPressed: () async {
-                            bool confirmar = await showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  backgroundColor: AppColors.primaryColor,
-                                  title: const Text(
-                                    'Advertencia',
-                                    style: TextStyle(),
-                                  ),
-                                  content: const Text(
-                                      '¿Estás seguro de que quieres eliminar este correo electrónico?'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text(
-                                        'Cancelar',
-                                        style: TextStyle(
-                                            color: AppColors.secondaryColor),
-                                      ),
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(false),
-                                    ),
-                                    TextButton(
-                                      child: const Text(
-                                        'Eliminar',
-                                        style: TextStyle(
-                                            color: AppColors.backgroundColor),
-                                      ),
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(true),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-
-                            if (confirmar == true) {
-                              await _removeEmail(emailList[index]);
-                            }
-                          },
-                        ),
-                        onTap: () {
-                          userChanged(emailList[index]);
-                          if (kDebugMode) {
-                            print('Cuenta seleccionada: ${emailList[index]}');
-                          }
-                          print("Regrese del show en onTops");
-                          _checkLoginStatus();
-                          Navigator.pop(context);
-                        },
-                      );
-                    },
-                  ),
-          ),
-        );
-      },
     );
   }
 }

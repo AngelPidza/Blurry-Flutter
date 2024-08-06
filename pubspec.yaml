@@ -49,6 +49,8 @@ dependencies:
   image: 4.2.0
   #Este es para los botones de a principio de la pagina 'MyHomePage'
   flutter_speed_dial: ^7.0.0
+  #Para el .env
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
 
