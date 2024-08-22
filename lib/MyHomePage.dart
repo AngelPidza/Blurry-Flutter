@@ -620,7 +620,7 @@ class _MyhomepageState extends State<Myhomepage> {
     double opacityButton = 1.0 - (_scrollOffset / 100);
     double appBarHeight = 200.0 - _scrollOffset;
     double titleFontSize = 30 + (_scrollOffset / 14);
-    double titlePositionRight = 160 - (_scrollOffset * 1.4);
+    double titlePositionRight = 170 - (_scrollOffset * 1.4);
     double titlePositionTop = 100 - (_scrollOffset / 1.6);
     //Variables
     const labelStyleFloatingActionButton = TextStyle(
@@ -777,63 +777,7 @@ class _MyhomepageState extends State<Myhomepage> {
                                 : null,
                           ),
                         )
-                      : TextButton(
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.all<Color>(
-                                const Color.fromARGB(255, 0, 0, 0)
-                                    .withOpacity(0.2)),
-                            foregroundColor:
-                                WidgetStateProperty.all<Color>(Colors.white),
-                            overlayColor:
-                                WidgetStateProperty.resolveWith<Color?>(
-                              (Set<WidgetState> states) {
-                                if (states.contains(WidgetState.hovered)) {
-                                  return Colors.white.withOpacity(0.04);
-                                }
-                                if (states.contains(WidgetState.focused) ||
-                                    states.contains(WidgetState.pressed)) {
-                                  return Colors.white.withOpacity(0.12);
-                                }
-                                return null;
-                              },
-                            ),
-                            shape:
-                                WidgetStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                transitionDuration:
-                                    const Duration(milliseconds: 600),
-                                pageBuilder: (_, __, ___) => const LoginPage(),
-                                transitionsBuilder: (_, animation, __, child) {
-                                  return ScaleTransition(
-                                    scale: Tween<double>(begin: 0.0, end: 1.0)
-                                        .animate(
-                                      CurvedAnimation(
-                                        parent: animation,
-                                        curve: Curves.easeInOutBack,
-                                      ),
-                                    ),
-                                    child: child,
-                                  );
-                                },
-                              ),
-                            ).then((_) {
-                              print("Regresé a la pantalla anterior");
-                              _checkLoginStatus();
-                            });
-                          },
-                          child: const Text(
-                            'I/R sesión',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
+                      : const Offstage(),
                 ),
               ],
             ),
